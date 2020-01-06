@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.hbt.mapper.BoardAttachMapper">
+
+<insert id="insert">
+<![CDATA[
+insert into tbl_attach(uuid, uploadPath, fileName, filetype, bno)
+values(#{uuid}, #{uploadPath}, #{fileName}, #{filetype}, #{bno})
+]]>
+</insert>
+
+<delete id="delete">
+<![CDATA[
+delete from tbl_attach 
+where uuid = #{uuid}
+]]>
+</delete>
+
+<select id="findByBno" resultType="org.hbt.domain.BoardAttachVO">
+<![CDATA[
+select * from tbl_attach
+where bno = #{bno}
+]]>
+</select>
+
+<delete id="deleteAll">
+<![CDATA[
+delete from tbl_attach 
+where bno = #{bno}
+]]>
+</delete>
+
+<select id="getOldFiles" resultType="org.hbt.domain.BoardAttachVO">
+select * from tbl_attach
+where uploadPath = date_format(now() -1, '%Y\%m\%d')
+</select>
+
+
+
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.hbt.mapper.ReplyMapper">
+
+
+<insert id="insert">
+<![CDATA[
+insert into tbl_reply(bno,reply,replyer)
+values(#{bno},#{reply},#{replyer})
+]]>
+</insert>
+
+<select id="read" resultType="org.hbt.domain.ReplyVO">
+<![CDATA[
+select * from tbl_reply
+where rno = #{rno}
+]]>
+</select>
+
+<delete id="delete">
+<![CDATA[
+delete from tbl_reply
+where rno = #{rno}
+]]>
+</delete>
+
+<update id="update">
+<![CDATA[
+update tbl_reply set reply = #{reply},
+updatedate = sysdate() 
+where rno = #{rno}
+]]>
+</update>
+
+<select id="getListWithPaging" resultType="org.hbt.domain.ReplyVO">
+<![CDATA[
+select rno, bno, reply, replyer, replyDate, updatedate from tbl_reply
+where bno = #{bno} 
+order by rno asc
+limit #{dto.skip} , #{dto.amount}
+]]>
+</select>
+
+<select id="getCountByBno" resultType="int">
+<![CDATA[
+select count(rno) from tbl_reply
+where bno = #{bno}
+]]>
+</select>
+
+
+</mapper>

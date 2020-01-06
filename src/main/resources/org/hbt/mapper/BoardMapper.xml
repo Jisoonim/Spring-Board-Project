@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="org.hbt.mapper.BoardMapper">
+
+<sql id="search">
+<if test="keyword != null and types != null">
+  <foreach collection="types" item="item" open="AND (" close=")" 
+    separator="OR" >
+  	<if test="item eq 'T'.toString()" >
+  	title like concat("%", #{keyword}, "%")
+  	</if>
+  	<if test="item eq 'C'.toString()">
+  	content like concat("%", #{keyword}, "%")
+  	</if>
+  	<if test="item eq 'W'.toString()">
+  	writer like concat("%", #{keyword}, "%")
+  	</if>  	
+  </foreach>
+</if>
+</sql>
+
+<insert id="insert">
+<![CDATA[
+insert into tbl_board(title,content,writer)
+values(#{title},#{content},#{writer})
+]]>
+</insert>
+
+<insert id="insertSelectKey">
+<selectKey keyProperty="bno" resultType="long">
+select LAST_INSERT_ID()
+</selectKey>
+insert into tbl_board(title,content,writer)
+values(#{title},#{content},#{writer})
+</insert>
+
+<select id="selectOne" resultType="org.hbt.domain.BoardVO">
+<![CDATA[
+select * from tbl_board
+where bno = #{bno}
+]]>
+</select>
+
+<delete id="delete">
+<![CDATA[
+delete from tbl_board
+where bno = #{bno}
+]]>
+</delete>
+
+<update id="update">
+<![CDATA[
+update tbl_board set
+title = #{title},
+content = #{content},
+writer = #{writer}, updatedate = sysdate() 
+where bno = #{bno}
+]]>
+</update>
+
+<select id="listPage" resultType="org.hbt.domain.BoardVO">
+select * from tbl_board
+where bno > 0
+
+<include refid="search"></include>
+
+order by bno desc
+limit #{skip}, #{amount}
+</select>
+
+<select id="countPage" resultType="int">
+select count(bno) from tbl_board
+where bno > 0
+<include refid="search"></include>
+</select>
+
+<update id="updateReplyCnt">
+<![CDATA[
+update tbl_board set replycnt = replycnt + #{amount}
+where bno = #{bno}
+]]>
+</update>
+
+</mapper>
